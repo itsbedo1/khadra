@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تعديل الأسعار | خضرة</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --gd:#1a4a2e; --gm:#2d7a4f; --gp:#e8f7ee; --gold:#e8b84b; --cream:#fdf9f2;
+  --txt:#1e2d23; --mut:#6b7f72; --rs:10px; --tr:all .3s cubic-bezier(.4,0,.2,1);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Cairo',sans-serif;background:var(--cream);color:var(--txt);min-height:100vh;}
+#tst{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(16px);background:var(--gd);color:#fff;padding:11px 22px;border-radius:50px;font-size:.86rem;font-weight:700;box-shadow:0 8px 40px rgba(26,74,46,.2);opacity:0;transition:all .3s;z-index:8000;pointer-events:none;max-width:92vw;}
+#tst.on{opacity:1;transform:translateX(-50%) translateY(0);}
+
+.tb{background:var(--gd);color:#fff;padding:16px 18px;font-weight:900;font-size:1.05rem;}
+
+/* GATE */
+.gate{max-width:340px;margin:14vh auto 0;background:#fff;border-radius:20px;padding:30px 26px;box-shadow:0 12px 40px rgba(26,74,46,.12);text-align:center;}
+.gate .ic{font-size:2.4rem;margin-bottom:8px;}
+.gate h2{font-size:1.1rem;font-weight:900;color:var(--gd);margin-bottom:16px;}
+.gate input{width:100%;border:1.5px solid #dde6e1;border-radius:var(--rs);padding:11px 13px;font-family:'Cairo',sans-serif;font-size:.92rem;outline:none;margin-bottom:12px;}
+.gate input:focus{border-color:var(--gm);}
+.gate button{width:100%;background:var(--gm);color:#fff;border:none;border-radius:50px;padding:11px;font-size:.92rem;font-family:'Cairo',sans-serif;font-weight:900;cursor:pointer;}
+.gate button:hover{background:var(--gd);}
+
+/* PANEL */
+#panel{display:none;max-width:920px;margin:0 auto;padding:18px 14px 60px;}
+.addRow{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;background:var(--gp);border-radius:12px;padding:14px;margin-bottom:18px;}
+@media(max-width:520px){.addRow{grid-template-columns:1fr;}}
+.addRow input,.addRow select{border:1.5px solid #dde;border-radius:8px;padding:9px 10px;font-family:'Cairo',sans-serif;font-size:.85rem;outline:none;width:100%;}
+.addBtn{grid-column:1/-1;background:var(--gm);color:#fff;border:none;border-radius:50px;padding:11px;font-size:.88rem;font-family:'Cairo',sans-serif;font-weight:900;cursor:pointer;}
+.addBtn:hover{background:var(--gd);}
+
+.tw{background:#fff;border-radius:16px;box-shadow:0 2px 12px rgba(26,74,46,.09);overflow:hidden;}
+table{width:100%;border-collapse:collapse;}
+th{background:var(--gp);text-align:right;padding:9px 10px;font-size:.76rem;font-weight:700;color:var(--gd);}
+td{padding:8px 10px;font-size:.85rem;border-bottom:1px solid var(--gp);vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+td input{border:1.5px solid #dde;border-radius:7px;padding:6px 8px;width:90px;font-family:'Cairo',sans-serif;font-size:.85rem;outline:none;}
+td input:focus{border-color:var(--gm);}
+.emo{font-size:1.4rem;}
+.abtn{border:none;border-radius:16px;padding:6px 12px;font-size:.76rem;font-family:'Cairo',sans-serif;font-weight:700;cursor:pointer;transition:var(--tr);white-space:nowrap;}
+.abtn.save{background:var(--gm);color:#fff;} .abtn.save:hover{background:var(--gd);}
+.abtn.del{background:#fde8e8;color:#c0392b;} .abtn.del:hover{background:#c0392b;color:#fff;}
+.tblwrap{overflow-x:auto;}
+.hint{color:var(--mut);font-size:.8rem;margin-bottom:14px;}
+</style>
+</head>
+<body>
+
+<div id="tst"></div>
+<div class="tb">🌿 خضرة — تعديل الأسعار والمخزون</div>
+
+<!-- GATE -->
+<div class="gate" id="gate">
+  <div class="ic">🔒</div>
+  <h2>أدخل كلمة المرور</h2>
+  <input type="password" id="passInput" placeholder="••••••" onkeydown="if(event.key==='Enter')checkPass()">
+  <button onclick="checkPass()">دخول</button>
+</div>
+
+<!-- PANEL -->
+<div id="panel">
+  <div class="hint">أي تعديل هنا ينعكس فورًا على المتجر. اضغط 💾 حفظ بعد ما تغيّر السعر أو الكمية.</div>
+
+  <div class="addRow">
+    <input type="text" id="nAr" placeholder="اسم المنتج (عربي)">
+    <input type="text" id="nEn" placeholder="Product name (English)">
+    <input type="number" id="nPr" placeholder="السعر (IQD)">
+    <input type="number" id="nSt" placeholder="الكمية">
+    <input type="text" id="nEm" placeholder="رمز (إيموجي) مثال 🍅">
+    <select id="nCt">
+      <option value="vegetables">خضروات</option>
+      <option value="fruits">فواكه</option>
+      <option value="herbs">أعشاب</option>
+      <option value="citrus">حمضيات</option>
+    </select>
+    <button class="addBtn" onclick="addProduct()">➕ إضافة منتج جديد</button>
+  </div>
+
+  <div class="tw">
+    <div class="tblwrap">
+      <table id="tbl"></table>
+    </div>
+  </div>
+</div>
+
+<script>
+// نفس قاعدة بيانات Supabase المستخدمة في الموقع
+const URL2 = 'https://teospyoryqqgieqbbqtt.supabase.co';
+const KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRlb3NweW9yeXFxZ2llcWJicXR0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3OTYxNDIsImV4cCI6MjA5MTM3MjE0Mn0.NMf-fhlUJh-SFCEuqMzCTx9DYj40u6U7acECZu09Oko';
+const HD = {'Content-Type':'application/json','apikey':KEY,'Authorization':'Bearer '+KEY,'Prefer':'return=representation'};
+
+// كلمة مرور هذه الصفحة — غيّرها لأي شيء تحبه
+const PASSWORD = 'khadra2026';
+
+async function sGet(t,q=''){const r=await fetch(URL2+'/rest/v1/'+t+'?'+q,{headers:HD});if(!r.ok)throw await r.text();return r.json();}
+async function sPost(t,b){const r=await fetch(URL2+'/rest/v1/'+t,{method:'POST',headers:HD,body:JSON.stringify(b)});if(!r.ok)throw await r.text();return r.json();}
+async function sPatch(t,f,b){const r=await fetch(URL2+'/rest/v1/'+t+'?'+f,{method:'PATCH',headers:HD,body:JSON.stringify(b)});if(!r.ok)throw await r.text();return r.json();}
+async function sDel(t,f){const r=await fetch(URL2+'/rest/v1/'+t+'?'+f,{method:'DELETE',headers:HD});if(!r.ok)throw await r.text();return true;}
+
+let tT; function toast(m){const e=document.getElementById('tst');e.textContent=m;e.classList.add('on');clearTimeout(tT);tT=setTimeout(()=>e.classList.remove('on'),3000);}
+
+let prods=[];
+function rP(r){return{id:r.id,ar:r.name_ar,en:r.name_en,price:r.price,stock:r.stock,emoji:r.emoji,cat:r.category};}
+
+function checkPass(){
+  const v=document.getElementById('passInput').value;
+  if(v!==PASSWORD){toast('❌ كلمة المرور غير صحيحة');return;}
+  document.getElementById('gate').style.display='none';
+  document.getElementById('panel').style.display='block';
+  loadProducts();
+}
+
+async function loadProducts(){
+  try{
+    const p=await sGet('khadra_products','order=id');
+    prods=p.map(rP);
+    drawTbl();
+  }catch(e){
+    toast('⚠️ تعذر الاتصال بقاعدة البيانات');
+  }
+}
+
+function drawTbl(){
+  document.getElementById('tbl').innerHTML=`<tr><th></th><th>المنتج</th><th>السعر (IQD)</th><th>الكمية</th><th></th><th></th></tr>`+
+    prods.map(p=>`<tr>
+      <td class="emo">${p.emoji||'🥬'}</td>
+      <td>${p.ar}</td>
+      <td><input type="number" id="pr-price-${p.id}" value="${p.price}"></td>
+      <td><input type="number" id="pr-stock-${p.id}" value="${p.stock}"></td>
+      <td><button class="abtn save" onclick="saveProduct(${p.id})">💾 حفظ</button></td>
+      <td><button class="abtn del" onclick="deleteProduct(${p.id})">🗑 حذف</button></td>
+    </tr>`).join('');
+}
+
+async function saveProduct(id){
+  const price=parseFloat(document.getElementById('pr-price-'+id).value)||0;
+  const stock=parseInt(document.getElementById('pr-stock-'+id).value)||0;
+  try{
+    await sPatch('khadra_products','id=eq.'+id,{price,stock});
+    const p=prods.find(x=>x.id===id);if(p){p.price=price;p.stock=stock;}
+    toast('✅ تم الحفظ');
+  }catch(e){toast('⚠️ تعذر الحفظ — تحقق من الاتصال');}
+}
+
+async function deleteProduct(id){
+  if(!confirm('حذف هذا المنتج نهائيًا؟'))return;
+  try{
+    await sDel('khadra_products','id=eq.'+id);
+    prods=prods.filter(p=>p.id!==id);
+    drawTbl();
+    toast('🗑 تم الحذف');
+  }catch(e){toast('⚠️ تعذر الحذف — تحقق من الاتصال');}
+}
+
+async function addProduct(){
+  const name_ar=(document.getElementById('nAr').value||'').trim();
+  const name_en=(document.getElementById('nEn').value||'').trim();
+  const price=parseFloat(document.getElementById('nPr').value)||0;
+  const stock=parseInt(document.getElementById('nSt').value)||0;
+  const emoji=(document.getElementById('nEm').value||'🥬').trim();
+  const category=document.getElementById('nCt').value;
+  if(!name_ar||!price){toast('⚠️ أدخل الاسم والسعر على الأقل');return;}
+  try{
+    const r=await sPost('khadra_products',{name_ar,name_en,price,stock,emoji,category});
+    prods.push(rP(r[0]));
+    ['nAr','nEn','nPr','nSt','nEm'].forEach(id=>document.getElementById(id).value='');
+    drawTbl();
+    toast('✅ تمت إضافة المنتج');
+  }catch(e){toast('⚠️ تعذر الإضافة — تحقق من الاتصال');}
+}
+</script>
+</body>
+</html>

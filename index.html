@@ -41,7 +41,6 @@ html{overflow-x:hidden;}
 /* TOPBAR */
 .tb{position:fixed;top:0;right:0;left:0;z-index:1000;background:var(--gd);display:flex;align-items:center;justify-content:space-between;padding:10px 14px;}
 .tbr{color:var(--gl);font-weight:900;font-size:1rem;}
-.gear{background:rgba(255,255,255,.12);border:none;color:var(--gl);border-radius:50%;width:32px;height:32px;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;}
 
 /* VIEWS */
 #app{margin-top:50px;}
@@ -125,12 +124,11 @@ html{overflow-x:hidden;}
 .bco:hover{background:var(--gd);}
 .cemp{text-align:center;padding:44px 18px;color:var(--mut);}
 
-/* MODAL (checkout + admin) */
+/* MODAL (checkout) */
 .mbg{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:1100;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s;padding:14px;}
 .mbg.on{opacity:1;pointer-events:all;}
 .mb{background:#fff;border-radius:20px;width:min(460px,95vw);max-height:90vh;display:flex;flex-direction:column;box-shadow:0 24px 60px rgba(0,0,0,.28);transform:translateY(18px);transition:transform .3s;}
 .mbg.on .mb{transform:translateY(0);}
-.mb.wide{width:min(760px,96vw);}
 .mh{background:var(--gd);color:#fff;padding:15px 17px;border-radius:20px 20px 0 0;display:flex;justify-content:space-between;align-items:center;}
 .mh h3{font-size:.96rem;font-weight:900;}
 .mx{background:rgba(255,255,255,.15);border:none;color:#fff;width:29px;height:29px;border-radius:50%;font-size:.96rem;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
@@ -148,19 +146,6 @@ html{overflow-x:hidden;}
 #orderCopyBox{display:none;margin-top:10px;}
 #orderCopyBox textarea{height:130px;font-size:.78rem;}
 
-/* ADMIN TABLE */
-.atbl{width:100%;border-collapse:collapse;margin-bottom:18px;}
-.atbl th{background:var(--gp);text-align:right;padding:7px 8px;font-size:.72rem;font-weight:700;color:var(--gd);}
-.atbl td{padding:6px 8px;font-size:.8rem;border-bottom:1px solid var(--gp);vertical-align:middle;}
-.atbl input{border:1.5px solid #dde;border-radius:7px;padding:5px 7px;width:78px;font-family:'Cairo',sans-serif;font-size:.8rem;outline:none;}
-.atbl input:focus{border-color:var(--gm);}
-.aemo{font-size:1.3rem;}
-.abtn{border:none;border-radius:16px;padding:5px 10px;font-size:.72rem;font-family:'Cairo',sans-serif;font-weight:700;cursor:pointer;transition:var(--tr);}
-.abtn.save{background:var(--gm);color:#fff;} .abtn.save:hover{background:var(--gd);}
-.abtn.del{background:#fde8e8;color:#c0392b;} .abtn.del:hover{background:#c0392b;color:#fff;}
-.addRow{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;background:var(--gp);border-radius:12px;padding:12px;margin-bottom:16px;}
-@media(max-width:480px){.addRow{grid-template-columns:1fr;}}
-.addRow input,.addRow select{border:1.5px solid #dde;border-radius:8px;padding:8px 10px;font-family:'Cairo',sans-serif;font-size:.82rem;outline:none;width:100%;}
 </style>
 </head>
 <body>
@@ -171,7 +156,6 @@ html{overflow-x:hidden;}
 <!-- TOPBAR -->
 <div class="tb">
   <div class="tbr">🌿 خضرة · Khadra</div>
-  <button class="gear" onclick="openAdminGate()" title="إدارة الأسعار">⚙️</button>
 </div>
 
 <div id="app">
@@ -228,43 +212,6 @@ html{overflow-x:hidden;}
   </div>
 </div>
 
-<!-- ADMIN PASSWORD GATE -->
-<div class="mbg" id="adminGateModal" onclick="if(event.target===this)closeAdminGate()">
-  <div class="mb">
-    <div class="mh"><h3>🔒 دخول الإدارة</h3><button class="mx" onclick="closeAdminGate()">✕</button></div>
-    <div class="mbd">
-      <div class="fg"><label>كلمة المرور</label><input type="password" id="adminPassInput" placeholder="••••••" onkeydown="if(event.key==='Enter')checkAdminPass()"></div>
-      <button class="bsub" onclick="checkAdminPass()">دخول</button>
-    </div>
-  </div>
-</div>
-
-<!-- ADMIN PANEL -->
-<div class="mbg" id="adminModal" onclick="if(event.target===this)closeAdmin()">
-  <div class="mb wide">
-    <div class="mh"><h3>💰 إدارة الأسعار والمخزون</h3><button class="mx" onclick="closeAdmin()">✕</button></div>
-    <div class="mbd">
-      <div class="addRow">
-        <input type="text" id="nAr" placeholder="اسم المنتج (عربي)">
-        <input type="text" id="nEn" placeholder="Product name (English)">
-        <input type="number" id="nPr" placeholder="السعر (IQD)">
-        <input type="number" id="nSt" placeholder="الكمية">
-        <input type="text" id="nEm" placeholder="رمز (إيموجي) مثال 🍅">
-        <select id="nCt">
-          <option value="vegetables">خضروات</option>
-          <option value="fruits">فواكه</option>
-          <option value="herbs">أعشاب</option>
-          <option value="citrus">حمضيات</option>
-        </select>
-      </div>
-      <button class="abtn save" style="width:100%;padding:10px;margin-bottom:16px" onclick="adminAddProduct()">➕ إضافة منتج جديد</button>
-      <div style="overflow-x:auto">
-        <table class="atbl" id="adminTbl"></table>
-      </div>
-    </div>
-  </div>
-</div>
-
 <script>
 // ═══════════ إعدادات — عدّلها مرة واحدة فقط ═══════════
 
@@ -277,18 +224,12 @@ const HD = {'Content-Type':'application/json','apikey':KEY,'Authorization':'Bear
 const TELEGRAM_BOT_TOKEN = 'PASTE_YOUR_BOT_TOKEN_HERE';
 const TELEGRAM_CHAT_ID   = 'PASTE_YOUR_CHAT_ID_HERE';
 
-// كلمة مرور صفحة إدارة الأسعار — غيّرها لأي شيء تحبه
-const ADMIN_PASSWORD = 'khadra2026';
-
 // رسوم التوصيل الثابتة (IQD)
 const DELIVERY_FEE = 2500;
 
 // ═══════════ نهاية الإعدادات ═══════════
 
 async function sGet(t,q=''){const r=await fetch(URL2+'/rest/v1/'+t+'?'+q,{headers:HD});if(!r.ok)throw await r.text();return r.json();}
-async function sPost(t,b){const r=await fetch(URL2+'/rest/v1/'+t,{method:'POST',headers:HD,body:JSON.stringify(b)});if(!r.ok)throw await r.text();return r.json();}
-async function sPatch(t,f,b){const r=await fetch(URL2+'/rest/v1/'+t+'?'+f,{method:'PATCH',headers:HD,body:JSON.stringify(b)});if(!r.ok)throw await r.text();return r.json();}
-async function sDel(t,f){const r=await fetch(URL2+'/rest/v1/'+t+'?'+f,{method:'DELETE',headers:HD});if(!r.ok)throw await r.text();return true;}
 
 function ld(show,msg='جاري التحميل...'){document.getElementById('ldm').textContent=msg;document.getElementById('ld').classList.toggle('on',show);}
 let tT; function toast(m){const e=document.getElementById('tst');e.textContent=m;e.classList.add('on');clearTimeout(tT);tT=setTimeout(()=>e.classList.remove('on'),3200);}
@@ -306,7 +247,6 @@ const DEMO_PRODUCTS=[
   {id:9,ar:'ليمون',en:'Lemon',price:1500,stock:50,emoji:'🍋',cat:'citrus'},
   {id:10,ar:'نعناع',en:'Mint',price:500,stock:50,emoji:'🌿',cat:'herbs'},
 ];
-let usingDemoData=false;
 
 const CATS=[{id:'all',ar:'الكل',ic:'🌿'},{id:'vegetables',ar:'خضروات',ic:'🥦'},{id:'fruits',ar:'فواكه',ic:'🍎'},{id:'herbs',ar:'أعشاب',ic:'🌿'},{id:'citrus',ar:'حمضيات',ic:'🍋'}];
 
@@ -319,11 +259,9 @@ async function loadProducts(){
   try{
     const p=await sGet('khadra_products','order=id');
     prods=p.map(rP);
-    usingDemoData=false;
   }catch(e){
     console.warn('تعذر تحميل المنتجات من قاعدة البيانات:',e);
     prods=DEMO_PRODUCTS.map(p=>({...p}));
-    usingDemoData=true;
     toast('⚠️ تعذر الاتصال بقاعدة البيانات — عرض بيانات تجريبية');
   }
   ld(false);
@@ -464,76 +402,6 @@ function copyOrderText(){
   const t=document.getElementById('orderCopyText');
   t.select();
   navigator.clipboard?.writeText(t.value).then(()=>toast('📋 تم نسخ الطلب')).catch(()=>document.execCommand('copy'));
-}
-
-// ═══════════ إدارة الأسعار (لوحة بسيطة محمية بكلمة مرور) ═══════════
-function openAdminGate(){
-  document.getElementById('adminPassInput').value='';
-  document.getElementById('adminGateModal').classList.add('on');
-}
-function closeAdminGate(){document.getElementById('adminGateModal').classList.remove('on');}
-function checkAdminPass(){
-  const v=document.getElementById('adminPassInput').value;
-  if(v!==ADMIN_PASSWORD){toast('❌ كلمة المرور غير صحيحة');return;}
-  closeAdminGate();
-  openAdmin();
-}
-
-function openAdmin(){
-  if(usingDemoData){toast('⚠️ قاعدة البيانات غير متصلة — التعديلات لن تُحفظ');}
-  drawAdminTbl();
-  document.getElementById('adminModal').classList.add('on');
-}
-function closeAdmin(){document.getElementById('adminModal').classList.remove('on');}
-
-function drawAdminTbl(){
-  document.getElementById('adminTbl').innerHTML=`<tr><th></th><th>المنتج</th><th>السعر (IQD)</th><th>الكمية</th><th></th><th></th></tr>`+
-    prods.map(p=>`<tr>
-      <td class="aemo">${p.emoji||'🥬'}</td>
-      <td>${p.ar}</td>
-      <td><input type="number" id="pr-price-${p.id}" value="${p.price}"></td>
-      <td><input type="number" id="pr-stock-${p.id}" value="${p.stock}"></td>
-      <td><button class="abtn save" onclick="adminSaveProduct(${p.id})">💾 حفظ</button></td>
-      <td><button class="abtn del" onclick="adminDeleteProduct(${p.id})">🗑 حذف</button></td>
-    </tr>`).join('');
-}
-
-async function adminSaveProduct(id){
-  const price=parseFloat(document.getElementById('pr-price-'+id).value)||0;
-  const stock=parseInt(document.getElementById('pr-stock-'+id).value)||0;
-  try{
-    await sPatch('khadra_products','id=eq.'+id,{price,stock});
-    const p=prods.find(x=>x.id===id);if(p){p.price=price;p.stock=stock;}
-    toast('✅ تم الحفظ');
-    drawProds();
-  }catch(e){toast('⚠️ تعذر الحفظ — تحقق من الاتصال بقاعدة البيانات');}
-}
-
-async function adminDeleteProduct(id){
-  if(!confirm('حذف هذا المنتج نهائيًا؟'))return;
-  try{
-    await sDel('khadra_products','id=eq.'+id);
-    prods=prods.filter(p=>p.id!==id);
-    drawAdminTbl();drawProds();
-    toast('🗑 تم الحذف');
-  }catch(e){toast('⚠️ تعذر الحذف — تحقق من الاتصال بقاعدة البيانات');}
-}
-
-async function adminAddProduct(){
-  const name_ar=(document.getElementById('nAr').value||'').trim();
-  const name_en=(document.getElementById('nEn').value||'').trim();
-  const price=parseFloat(document.getElementById('nPr').value)||0;
-  const stock=parseInt(document.getElementById('nSt').value)||0;
-  const emoji=(document.getElementById('nEm').value||'🥬').trim();
-  const category=document.getElementById('nCt').value;
-  if(!name_ar||!price){toast('⚠️ أدخل الاسم والسعر على الأقل');return;}
-  try{
-    const r=await sPost('khadra_products',{name_ar,name_en,price,stock,emoji,category});
-    prods.push(rP(r[0]));
-    ['nAr','nEn','nPr','nSt','nEm'].forEach(id=>document.getElementById(id).value='');
-    drawAdminTbl();drawCats();drawProds();
-    toast('✅ تمت إضافة المنتج');
-  }catch(e){toast('⚠️ تعذر الإضافة — تحقق من الاتصال بقاعدة البيانات');}
 }
 
 // ═══════════ التشغيل ═══════════
