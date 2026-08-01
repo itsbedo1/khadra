@@ -1,0 +1,38 @@
+name: تذكير الأسعار اليومي
+
+on:
+  schedule:
+    # الساعة 8 صباحًا بتوقيت بغداد (UTC+3) = 05:00 UTC
+    - cron: '0 5 * * *'
+  workflow_dispatch: {}
+
+jobs:
+  send-reminder:
+    runs-on: ubuntu-latest
+    steps:
+      - name: جلب المنتجات وإرسال رسالة تيليجرام
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          set -euo pipefail
+          SUPABASE_URL="https://teospyoryqqgieqbbqtt.supabase.co"
+          SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRlb3NweW9yeXFxZ2llcWJicXR0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3OTYxNDIsImV4cCI6MjA5MTM3MjE0Mn0.NMf-fhlUJh-SFCEuqMzCTx9DYj40u6U7acECZu09Oko"
+
+          products=$(curl -sS "$SUPABASE_URL/rest/v1/khadra_products?order=id" \
+            -H "apikey: $SUPABASE_KEY" \
+            -H "Authorization: Bearer $SUPABASE_KEY")
+
+          if [ "$(echo "$products" | jq 'length')" = "0" ]; then
+            list="لا توجد منتجات مضافة حاليًا."
+          else
+            list=$(echo "$products" | jq -r '.[] | "• \(.name_ar): \(.price | tostring) IQD"')
+          fi
+
+          message="🌿 تذكير أسعار اليوم — خضرة"$'\n\n'"$list"$'\n\n'"📝 لتعديل أي سعر: افتح الموقع واضغط زر ⚙️ (أعلى يمين الصفحة)"
+
+          payload=$(jq -n --arg chat_id "$TELEGRAM_CHAT_ID" --arg text "$message" '{chat_id:$chat_id, text:$text}')
+
+          curl -sS -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            -H "Content-Type: application/json" \
+            -d "$payload"
