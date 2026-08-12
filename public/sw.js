@@ -2,7 +2,7 @@
 // خضرة | Khadra Fresh — Service Worker
 // ══════════════════════════════════════
 
-const CACHE_NAME = 'khadra-v1';
+const CACHE_NAME = 'khadra-v2';
 
 // الملفات اللي تتحفظ للاستخدام بدون إنترنت
 const STATIC_CACHE = [
