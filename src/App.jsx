@@ -3,11 +3,6 @@ import { AnimatePresence, motion, useAnimationControls } from 'framer-motion';
 
 // ═══════════ إعدادات — عدّلها مرة واحدة فقط ═══════════
 
-// قاعدة بيانات Supabase (نفس القاعدة الموجودة مسبقًا في المشروع)
-const SUPABASE_URL = 'https://teospyoryqqgieqbbqtt.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRlb3NweW9yeXFxZ2llcWJicXR0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3OTYxNDIsImV4cCI6MjA5MTM3MjE0Mn0.NMf-fhlUJh-SFCEuqMzCTx9DYj40u6U7acECZu09Oko';
-const HD = { 'Content-Type': 'application/json', apikey: SUPABASE_KEY, Authorization: 'Bearer ' + SUPABASE_KEY };
-
 // بوت تيليجرام — استبدل القيمتين بالتوكن والـ chat id الخاصين بمحلك
 const TELEGRAM_BOT_TOKEN = 'PASTE_YOUR_BOT_TOKEN_HERE';
 const TELEGRAM_CHAT_ID = 'PASTE_YOUR_CHAT_ID_HERE';
@@ -25,31 +20,22 @@ const CATS = [
   { id: 'citrus', ar: 'حمضيات', ic: '🍋' },
 ];
 
-const DEMO_PRODUCTS = [
-  { id: 1, ar: 'طماطم', price: 2000, stock: 50, emoji: '🍅', cat: 'vegetables' },
-  { id: 2, ar: 'خيار', price: 1500, stock: 50, emoji: '🥒', cat: 'vegetables' },
-  { id: 3, ar: 'بطاطا', price: 1000, stock: 50, emoji: '🥔', cat: 'vegetables' },
-  { id: 4, ar: 'بصل', price: 1000, stock: 50, emoji: '🧅', cat: 'vegetables' },
-  { id: 5, ar: 'جزر', price: 1200, stock: 50, emoji: '🥕', cat: 'vegetables' },
-  { id: 6, ar: 'تفاح', price: 3000, stock: 50, emoji: '🍎', cat: 'fruits' },
-  { id: 7, ar: 'موز', price: 2500, stock: 50, emoji: '🍌', cat: 'fruits' },
-  { id: 8, ar: 'برتقال', price: 2000, stock: 50, emoji: '🍊', cat: 'citrus' },
-  { id: 9, ar: 'ليمون', price: 1500, stock: 50, emoji: '🍋', cat: 'citrus' },
-  { id: 10, ar: 'نعناع', price: 500, stock: 50, emoji: '🌿', cat: 'herbs' },
+// قائمة المنتجات — عدّل السعر أو أضف/احذف منتج هنا مباشرة، ما فيه قاعدة بيانات
+const PRODUCTS = [
+  { id: 1, ar: 'طماطم', price: 2000, emoji: '🍅', cat: 'vegetables' },
+  { id: 2, ar: 'خيار', price: 1500, emoji: '🥒', cat: 'vegetables' },
+  { id: 3, ar: 'بطاطا', price: 1000, emoji: '🥔', cat: 'vegetables' },
+  { id: 4, ar: 'بصل', price: 1000, emoji: '🧅', cat: 'vegetables' },
+  { id: 5, ar: 'جزر', price: 1200, emoji: '🥕', cat: 'vegetables' },
+  { id: 6, ar: 'تفاح', price: 3000, emoji: '🍎', cat: 'fruits' },
+  { id: 7, ar: 'موز', price: 2500, emoji: '🍌', cat: 'fruits' },
+  { id: 8, ar: 'برتقال', price: 2000, emoji: '🍊', cat: 'citrus' },
+  { id: 9, ar: 'ليمون', price: 1500, emoji: '🍋', cat: 'citrus' },
+  { id: 10, ar: 'نعناع', price: 500, emoji: '🌿', cat: 'herbs' },
 ];
 
-function rP(r) {
-  return { id: r.id, ar: r.name_ar, price: r.price, stock: r.stock, emoji: r.emoji, cat: r.category };
-}
-
-async function sGet(t, q = '') {
-  const r = await fetch(SUPABASE_URL + '/rest/v1/' + t + '?' + q, { headers: HD });
-  if (!r.ok) throw await r.text();
-  return r.json();
-}
-
 export default function App() {
-  const [prods, setProds] = useState([]);
+  const [prods] = useState(PRODUCTS);
   const [cart, setCart] = useState({});
   const [actCat, setActCat] = useState('all');
   const [search, setSearch] = useState('');
@@ -63,19 +49,6 @@ export default function App() {
     clearTimeout(toastTimer.current);
     toastTimer.current = setTimeout(() => setToastMsg(''), 3200);
   }
-
-  useEffect(() => {
-    (async () => {
-      try {
-        const p = await sGet('khadra_products', 'order=id');
-        setProds(p.map(rP));
-      } catch (e) {
-        console.warn('تعذر تحميل المنتجات من قاعدة البيانات:', e);
-        setProds(DEMO_PRODUCTS);
-        toast('⚠️ تعذر الاتصال بقاعدة البيانات — عرض بيانات تجريبية');
-      }
-    })();
-  }, []);
 
   const filteredProds = useMemo(() => {
     const q = search.trim().toLowerCase();
